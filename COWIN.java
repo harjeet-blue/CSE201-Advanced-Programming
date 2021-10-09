@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 class Vaccine{
@@ -11,13 +13,26 @@ class Vaccine{
 
         System.out.print("Enter Vaccine Name : ");
         this.name = sc.next();
-        System.out.print("Enter no of doses : ");
-        this.doses = sc.nextInt();
-        System.out.print("Enter gap between doses : ");
-        this.gap = sc.nextInt();
-
+        set_doses();
+        if(this.doses!=1)
+            set_gap();
     }
 
+    void set_doses(){
+        do {
+            System.out.print("Enter no of doses : ");
+            this.doses = sc.nextInt();
+            if(doses<1)System.out.println("Wrong input");
+        } while (doses<1);
+    }
+
+    void set_gap(){
+        do {
+            System.out.print("Enter gap between doses : ");
+            this.gap = sc.nextInt();
+            if(gap<0)System.out.println("Wrong input");
+        } while (gap<0);
+    }
 }
 
 class Citizen{
@@ -46,41 +61,85 @@ class Citizen{
 class Hospital{
 
     String name;
-    int ID;
     int pincode;
+    ArrayList<Slot> slot = new ArrayList<>();
     Scanner sc = new Scanner(System.in);
 
-    Hospital(int id){
+    Hospital(){
 
         System.out.println("Enter Hospital name : ");
         this.name = sc.next();
         System.out.println("Enter PinCode : ");
         this.pincode = sc.nextInt();
-        this.ID = id;
     }
-
+    
 }
 
 class Slot{
 
     int day;
-    int doses;
+    int quatity;
     String vaccine;
-    int HID;
+    Scanner sc = new Scanner(System.in);
+    
+    Slot(){
+        day();
+        doses();
+        name();
+        
+    }
+    void day(){
 
+        do{
+            System.out.println("Enter Day no : ");
+            this.day = sc.nextInt();
+            if(day<0)System.out.println("Wrong input");
+
+        }while(day<0);
+        
+    }
+    void doses(){
+
+        do{
+            System.out.println("Enter no of Doses : ");
+            this.quatity = sc.nextInt();
+            if(quatity<0)System.out.println("Wrong input");
+
+        }while(quatity<0);
+    }
+    void name(){
+        System.out.println("Select Vaccine");
+        
+    }
 }
 
 public class COWIN{
 
     public static Scanner sc = new Scanner(System.in);
+
+    static ArrayList<Vaccine> vaccine = new ArrayList<>();
+    static ArrayList<String> v_name = new ArrayList<>();
+    static HashMap<Integer,Hospital> HID = new HashMap<>();
+    static HashMap<String,Citizen> CID = new HashMap<>();
+    static HashMap<Integer,Integer> PID = new HashMap<>();
+    static HashMap<String, Integer> VID = new HashMap<>();
+    static int give_id=100000;
+
     public static void main(String[] args) {
         
-        dashboard();
-        Vaccine v = new Vaccine();
-        System.out.println(v.name + v.doses + v.gap);
+       int c = dashboard();
+       switch (c) {
+            case 1: add_vaccine();
+                break;
+            case 2: register_hopital();
+                break;
+            default:
+                break;
+       }
+
     }
 
-    public static void dashboard() {
+    public static int dashboard() {
 
         int p;
         System.out.println("1. ADD VACCINE");
@@ -90,14 +149,25 @@ public class COWIN{
         System.out.println("5. BOOK SLOTS FOR VACCINATION");
         System.out.println("6. LIST ALL SLOTS FOR VACCINATION");
         System.out.println("7. CHECK VACCINATION STATUS");
+        System.out.println("8. EXIT");
         System.out.println();
 
         do{
             System.out.print("choose the appropriate option : ");
             p=sc.nextInt();
 
-        }while(p<1 || p>7);
-        
+        }while(p<1 || p>8);
+        return p;
     }
 
+    public static void add_vaccine() {
+        Vaccine v = new Vaccine();
+        vaccine.add(v);
+        v_name.add(v.name);
+    }
+
+    public static void register_hopital() {
+        Hospital h = new Hospital();
+        HID.put(give_id++, h);
+    }
 }
