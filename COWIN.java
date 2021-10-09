@@ -81,6 +81,15 @@ class Citizen{
         else if(this.doses==v.doses)this.Vaccination_status="FULLY VACCINATED";
 
     }
+
+    void print_all(){
+
+        System.out.println("Patient ID: "+ID);
+        System.out.println("Name: "+name);
+        System.out.println("Vaccination status: "+Vaccination_status);
+        System.out.println("Vaccine: "+Vaccine_type);
+        System.out.println("No of doses: "+doses);
+    }
 }
 
 class Hospital{
@@ -113,33 +122,40 @@ class Hospital{
         for(int i =0; i<v_name.size();i++){
             System.out.println(i+" "+v_name.get(i));
         }
-        System.out.println("Select Vaccine: ");
+        System.out.print("Select Vaccine: ");
         int i = sc.nextInt();
 
         Slot s = new Slot(v_name.get(i));
         slot.add(s);
-        System.out.println("Slot added ");
-        System.out.println("Hostpita name: "+ID+" Day: "+s.day+" Quantity: "+s.quatity+" Vccine: "+s.vaccine);
+        System.out.println("Slot added \n "+"Hostpita name: "+name);
+        System.out.println("ID: "+ID+" Day: "+s.day+" Quantity: "+s.quatity+" Vccine: "+s.vaccine);
         return s.vaccine;
     }
 
     String slot_booking(int next, String type){
-        int i = 1;
+        int i = 0;
+        int flag=1;
         for(Slot s: slot){
             if(s.day>next && s.quatity>0 && (type.equals("none") || type.equals(s.vaccine))){
                 System.out.println(i+" Day->"+s.day+" Vaccine: "+s.vaccine+" Quantity: "+s.quatity);
-                i++;
+                flag++;
             }
+            i++;
         }
-        if(i==1){
+        if(flag==0){
             System.out.println("No Slots available for u");
             return "no";
         }
         System.out.print("Enter the slot no: ");
         int a = sc.nextInt();
-        Slot s = slot.get(--a);
+        Slot s = slot.get(a);
         s.quatity--;
         return s.vaccine;
+    }
+    void print_all_slots(){
+        for(Slot s : slot){
+            System.out.println("Day-> "+s.day+" Vaccine: "+s.vaccine+" Quantity: "+s.quatity);
+        }
     }
 }
 
@@ -205,7 +221,11 @@ public class COWIN{
                     break;
                 case 5: book_slot();
                     break;
-                default:
+                case 6: print_all();
+                    break;
+                case 7: citize_status();
+                    break;
+                default: System.out.println("Thanks");
                     break;
             }
         }while(c!=8);
@@ -272,8 +292,8 @@ public class COWIN{
     }
 
     public static void book_slot() {
-        
-        System.out.println("Enter Patient Unique ID: ");
+
+        System.out.print("Enter Patient Unique ID: ");
         String id = sc.next();
         Citizen c = CID.get(id);
         if(c.Vaccination_status.equals("FULLY VACCINATED")){
@@ -282,7 +302,7 @@ public class COWIN{
         }
         int x;
         do{
-            System.out.println("1. Search by area \n 2. Search by pincode \n 3. Exit ");
+            System.out.println("1. Search by area \n2. Search by vaccine \n3. Exit ");
             x= sc.nextInt();
             if(x>3 || x<1)System.out.println("Wrong input");
         }while(x>3 || x<1);
@@ -322,4 +342,17 @@ public class COWIN{
         Hospital h = HID.get(id);
         return h.slot_booking(next, type);
     }
+    public static void print_all() {
+        System.out.print("Enter Hospital ID: ");
+        int id = sc.nextInt();
+        Hospital h = HID.get(id);
+        h.print_all_slots();
+    }
+    public static void citize_status() {
+        System.out.print("Enter the Patient Unique ID: ");
+        String id = sc.next();
+        Citizen c = CID.get(id);
+        c.print_all();
+    }
+
 }
