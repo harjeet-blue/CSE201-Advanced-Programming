@@ -37,7 +37,7 @@ class Vaccine{
     }
 
     void print(){
-        System.out.println("Vaccine: "+name+" no of doses: "+doses+" Gap between doses: "+gap);
+        System.out.println("Vaccine: "+name+", no of doses: "+doses+", Gap between doses: "+gap);
     }
 }
 
@@ -52,30 +52,23 @@ class Citizen{
     int next;
     Scanner sc = new Scanner(System.in);
 
-    Citizen(int a){
+    Citizen(int a, String id){
 
         System.out.print("Enter name : ");
         this.name = sc.next();
         this.age = a;
-        set_id();
+        this.ID = id;
         this.next=0;
         this.doses=0;
         this.Vaccine_type="none";
         Vaccination_status="RESITERED";
-        System.out.println("Citizen name: "+name+" Age:"+age+" ID: "+ID);
-    }
-    void set_id(){
-        do {
-            System.out.print("Enter ID : ");
-            this.ID = sc.next();
-            if(ID.length()!=12)System.err.println("Wrong input");
-        } while (ID.length()!=12);
+        System.out.println("Citizen name: "+name+", Age:"+age+", ID: "+ID+", Status: "+Vaccination_status);
     }
 
-    void set_vac_status(Vaccine v){
+    void set_vac_status(Vaccine v, int d){
 
         this.Vaccine_type = v.name;
-        this.next+=v.gap;
+        this.next=d+v.gap;
         this.doses++;
         if(0<this.doses && this.doses<v.doses)this.Vaccination_status="PARTIALLY VACCINATED";
         else if(this.doses==v.doses)this.Vaccination_status="FULLY VACCINATED";
@@ -84,11 +77,11 @@ class Citizen{
 
     void print_all(){
 
-        System.out.println("Patient ID: "+ID);
         System.out.println("Name: "+name);
         System.out.println("Vaccination status: "+Vaccination_status);
         System.out.println("Vaccine: "+Vaccine_type);
         System.out.println("No of doses: "+doses);
+        if(doses!=0 || Vaccination_status.equals("FULLY VACCINATED"))System.out.println("Next due date: "+next);
     }
 }
 
@@ -106,7 +99,7 @@ class Hospital{
         this.name = sc.next();
         set_pin();
         this.ID =id;
-        System.out.println("Hospital name: "+name+" Pin: "+pincode+" Unique ID: "+ID);
+        System.out.println("Hospital name: "+name+", Pin: "+pincode+", Unique ID: "+ID);
     }
     
     void set_pin(){
@@ -118,7 +111,7 @@ class Hospital{
 
     }
     String Add_slot(ArrayList<String> v_name){
-
+        System.out.println();
         for(int i =0; i<v_name.size();i++){
             System.out.println(i+" "+v_name.get(i));
         }
@@ -127,34 +120,39 @@ class Hospital{
 
         Slot s = new Slot(v_name.get(i));
         slot.add(s);
-        System.out.println("Slot added \n "+"Hostpita name: "+name);
-        System.out.println("ID: "+ID+" Day: "+s.day+" Quantity: "+s.quatity+" Vccine: "+s.vaccine);
+        System.out.println("Slot added \n"+"Hostpita name: "+name);
+        System.out.println("ID: "+ID+", Day: "+s.day+", Quantity: "+s.quatity+", Vccine: "+s.vaccine);
         return s.vaccine;
     }
 
-    String slot_booking(int next, String type){
+    Slot slot_booking(int next, String type){
         int i = 0;
         int flag=1;
         for(Slot s: slot){
             if(s.day>next && s.quatity>0 && (type.equals("none") || type.equals(s.vaccine))){
-                System.out.println(i+" Day->"+s.day+" Vaccine: "+s.vaccine+" Quantity: "+s.quatity);
+                System.out.println(i+" Day->"+s.day+", Vaccine: "+s.vaccine+", Quantity: "+s.quatity);
                 flag++;
             }
             i++;
         }
-        if(flag==0){
+        if(flag==1){
             System.out.println("No Slots available for u");
-            return "no";
+            return null;
         }
         System.out.print("Enter the slot no: ");
         int a = sc.nextInt();
         Slot s = slot.get(a);
         s.quatity--;
-        return s.vaccine;
+        return s;
     }
+
     void print_all_slots(){
+        if(slot.size()==0 || slot==null){
+            System.out.println("No slots available at this moment ");
+            return;
+        }
         for(Slot s : slot){
-            System.out.println("Day-> "+s.day+" Vaccine: "+s.vaccine+" Quantity: "+s.quatity);
+            System.out.println("Day-> "+s.day+", Vaccine: "+s.vaccine+", Quantity: "+s.quatity);
         }
     }
 }
@@ -174,7 +172,7 @@ class Slot{
     void day(){
 
         do{
-            System.out.println("Enter Day no : ");
+            System.out.print("Enter Day no : ");
             this.day = sc.nextInt();
             if(day<0)System.out.println("Wrong input");
 
@@ -184,7 +182,7 @@ class Slot{
     void doses(){
 
         do{
-            System.out.println("Enter no of Doses : ");
+            System.out.print("Enter no of Doses : ");
             this.quatity = sc.nextInt();
             if(quatity<0)System.out.println("Wrong input");
 
@@ -202,34 +200,45 @@ public class COWIN{
     static HashMap<String,ArrayList<Integer>> PID = new HashMap<>();
     static HashMap<String, HashSet<Integer>> VID = new HashMap<>();
     static HashMap<String,Vaccine> vaccine = new HashMap<>();
-
     static int give_id=100000;
+    static boolean v1,v2,v3,v4,v5,v6,v7;
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args){
         int c;
         do{
             c = dashboard();
             switch (c) {
-                case 1: add_vaccine();
+                case 1: add_vaccine(); v1=true;
                     break;
-                case 2: register_hopital();
+                case 2: register_hopital(); v2 =true;
                     break;
-                case 3: register_citizen();
+                case 3: register_citizen(); v3 = true;
                     break;
-                case 4: add_slots();
+                case 4: if(check_dependency(4)){ add_slots(); v4 = true; }
+                        else System.out.println("Either viccines have not been added yet or No Hospital has registered");
                     break;
-                case 5: book_slot();
+                case 5: if(check_dependency(5)){ book_slot(); v5 = true; }
+                        else System.out.println("Either slots have not been added or No citizen has registered");
                     break;
-                case 6: print_all();
+                case 6: if(check_dependency(6)){ print_all(); v6 = true; }
+                        else System.out.println("No slots have been added yet");
                     break;
-                case 7: citize_status();
+                case 7: if(check_dependency(7)){ citize_status(); v7 = true; }
+                        else System.out.println("NO citizen has registerd yet");
                     break;
                 default: System.out.println("Thanks");
                     break;
             }
+            System.out.println();
         }while(c!=8);
 
+    }
+
+    public static boolean check_dependency(int c) {
+        if(c==4) return v1&&v2;
+        else if(c==5) return v4 && v3;
+        else if(c==6) return v4;
+        return v3;
     }
 
     public static int dashboard() {
@@ -274,14 +283,25 @@ public class COWIN{
             System.out.println("Only 18 and above are allowed");
             return;
         }
-        Citizen c = new Citizen(a);
+        System.out.print("Enter Unique ID: ");
+        String id = sc.next();
+        if(PID.containsKey(id)){
+            System.out.println("Citizen already registered with this ID");
+            return;
+        }
+        Citizen c = new Citizen(a,id);
         CID.put(c.ID, c);
     }
 
     public static void add_slots() {
-        System.out.print("Enter hospital ID: ");
-        int id = sc.nextInt();
-        Hospital h = HID.get(id);
+        Hospital h;
+        do{
+            System.out.print("Enter hospital ID: ");
+            int id = sc.nextInt();
+            h = HID.get(id);
+            if(h==null)System.out.println("Wrong ID");
+        }while(h==null);
+
         System.out.print("Enter the no of slots :");
         int n = sc.nextInt();
         while(n-->0){
@@ -292,10 +312,12 @@ public class COWIN{
     }
 
     public static void book_slot() {
-
-        System.out.print("Enter Patient Unique ID: ");
-        String id = sc.next();
-        Citizen c = CID.get(id);
+        Citizen c;
+        do{
+            System.out.print("Enter Patient Unique ID: ");
+            String id = sc.next();
+            c = CID.get(id);
+        }while(c==null);
         if(c.Vaccination_status.equals("FULLY VACCINATED")){
             System.out.println("You are fully vaccinated");
             return;
@@ -306,21 +328,22 @@ public class COWIN{
             x= sc.nextInt();
             if(x>3 || x<1)System.out.println("Wrong input");
         }while(x>3 || x<1);
-        String v;
-        if(x==1)v = search_by_area(c.next, c.Vaccine_type);
-        else if(x==2) v = search_by_pincode(c.next, c.Vaccine_type);
+        Slot s;
+        if(x==1)s = search_by_area(c.next, c.Vaccine_type);
+        else if(x==2) s = search_by_pincode(c.next, c.Vaccine_type);
         else return;
-        c.set_vac_status(vaccine.get(v));
+        if(s==null)return;
+        c.set_vac_status(vaccine.get(s.vaccine),s.day);
 
     }
 
-    public static String search_by_area(int next,String type){
+    public static Slot search_by_area(int next,String type){
         System.out.print("Enter the pincode: ");
         String p = sc.next();
         System.out.println("List of hospitals in that area :");
         for(Integer id: PID.get(p)){
             Hospital h = HID.get(id);
-            System.out.println("ID: "+h.ID+" Hospital name: "+h.name);
+            System.out.println("ID: "+h.ID+", Hospital name: "+h.name);
         }   
         
         System.out.print("Enter hospital ID: ");
@@ -329,7 +352,7 @@ public class COWIN{
         return h.slot_booking(next,type);
     }
 
-    public static String search_by_pincode(int next, String type) {
+    public static Slot search_by_pincode(int next, String type) {
         System.out.print("Enter the vaccine: ");
         String v = sc.next();
         System.out.println("List of hospitals: ");
