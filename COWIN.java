@@ -1,3 +1,10 @@
+// HARJEET SINGH YADAV
+// IIIT - DELHI  @2024
+// ROLL no - 2020561
+// BRANCH - CSAI
+
+// ******************************************* COWIN APP ( command line simulation )**********************************
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
