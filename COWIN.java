@@ -301,7 +301,7 @@ public class COWIN{
             if(id.length()!=12)System.out.println("Invalid ID");
         }while(id.length()!=12);
 
-        if(PID.containsKey(id)){
+        if(CID.containsKey(id)){
             System.out.println("Citizen already registered with this ID");
             return;
         }
