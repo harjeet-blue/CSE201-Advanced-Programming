@@ -1,42 +1,45 @@
 package HopAndWin;
 
-public class Tile{
+public class Tile {
 
     private Toy toy;
     private int ID;
 
-    public Tile( int i, String name){
+    public Tile(int i, String name) {
         this.toy = new Toy(name);
         this.ID = i;
     }
 
-    public Toy softCopy(){
+    public Toy softCopy() {
         return toy.clone();
     }
-    
-    public void setID(int i){
+
+    public void setID(int i) {
         this.ID = i;
     }
-    public int getID(){
+
+    public int getID() {
         return ID;
     }
-    public void setToy(Toy t){
+
+    public void setToy(Toy t) {
         this.toy = t;
     }
-    public Toy getToy(){
+
+    public Toy getToy() {
         return toy;
     }
 }
 
-class Toy implements Cloneable{
+class Toy implements Cloneable {
 
     private String name;
 
-    public Toy(String name){
+    public Toy(String name) {
         this.name = name;
     }
 
-    public Toy clone(){
+    public Toy clone() {
         try {
             Toy copy = (Toy) super.clone();
             return copy;
@@ -49,7 +52,7 @@ class Toy implements Cloneable{
         this.name = s;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 }
