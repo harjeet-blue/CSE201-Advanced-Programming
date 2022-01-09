@@ -1,3 +1,4 @@
-# AP_assignments
+# Advanced Programming - Assignments 
 
-This is the command line simulation of the COWIN APP, coded in OOP's paradigm
+These are all CSE201-Advanced Programming Assignments, coded in OOP's paradigm
+Command line simulation of Snake and Ladders, HopAndWin and COWIN App
